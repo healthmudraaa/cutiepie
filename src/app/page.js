@@ -11,149 +11,243 @@ export default function Home() {
   };
 
   return (
-    <main className="main-container">
-      <header className="app-header glass">
-        <div className="logo">CutiePie</div>
-        <button
-          className={`user-status ${status.toLowerCase()}`}
-          onClick={toggleStatus}
-        >
-          <span className="status-dot"></span>
-          <span className="status-text">{status === 'APPROACHABLE' ? 'Approachable' : 'Busy'}</span>
-        </button>
+    <main className="app-container">
+      {/* Vibrant Header */}
+      <header className="app-header">
+        <div className="header-content">
+          <div className="logo-section">
+            <div className="logo-icon">💕</div>
+            <h1 className="logo-text">CutiePie</h1>
+          </div>
+
+          <button
+            className={`status-toggle ${status.toLowerCase()}`}
+            onClick={toggleStatus}
+          >
+            <span className="status-indicator"></span>
+            <span className="status-label">
+              {status === 'APPROACHABLE' ? 'Available Now' : 'Busy'}
+            </span>
+          </button>
+        </div>
       </header>
 
-      <section className="hero">
-        <h1 className="title glow-text">Find your vibe.</h1>
-        <p className="subtitle">
-          {status === 'APPROACHABLE'
-            ? 'Discover who is nearby and ready to chat.'
-            : 'You are currently hidden from others.'}
-        </p>
+      {/* Eye-catching Hero Section */}
+      <section className="hero-section">
+        <div className="hero-content">
+          <h2 className="hero-title">
+            {status === 'APPROACHABLE'
+              ? '✨ Find Your Perfect Match Nearby'
+              : '🔒 You are currently invisible'}
+          </h2>
+          <p className="hero-subtitle">
+            {status === 'APPROACHABLE'
+              ? 'Connect with amazing people around you in real-time'
+              : 'Switch to Available to start meeting incredible people'}
+          </p>
+        </div>
       </section>
 
+      {/* Main Content */}
       <NearbyRadar userStatus={status} />
 
       <style jsx>{`
-        .main-container {
+        .app-container {
           min-height: 100vh;
-          background: radial-gradient(circle at top, #1a1a1a, var(--bg-dark));
-          padding-top: 80px;
-          padding-bottom: 20px;
+          background: var(--bg-primary);
         }
 
         .app-header {
-          position: fixed;
+          position: sticky;
           top: 0;
-          left: 0;
-          width: 100%;
-          padding: 16px 24px;
+          z-index: 100;
+          background: var(--white);
+          border-bottom: 2px solid var(--light-gray);
+          box-shadow: var(--shadow-md);
+        }
+
+        .header-content {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: var(--spacing-lg) var(--spacing-xl);
           display: flex;
           justify-content: space-between;
           align-items: center;
-          z-index: 100;
         }
 
-        .logo {
-          font-size: 1.5rem;
-          font-weight: 800;
-          background: linear-gradient(to right, var(--primary), var(--secondary));
+        .logo-section {
+          display: flex;
+          align-items: center;
+          gap: var(--spacing-md);
+        }
+
+        .logo-icon {
+          font-size: 2.5rem;
+          line-height: 1;
+          filter: drop-shadow(0 2px 8px rgba(255, 59, 92, 0.3));
+        }
+
+        .logo-text {
+          font-size: 2rem;
+          font-weight: var(--font-weight-extrabold);
+          background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
+          background-clip: text;
           letter-spacing: -1px;
         }
 
-        .user-status {
+        .status-toggle {
           display: flex;
           align-items: center;
-          gap: 8px;
-          font-size: 0.9rem;
-          padding: 8px 16px;
-          background: rgba(255,255,255,0.1);
-          border-radius: 20px;
-          border: 1px solid rgba(255,255,255,0.1);
-          color: white;
-          cursor: pointer;
-          transition: all 0.3s ease;
+          gap: var(--spacing-sm);
+          padding: var(--spacing-md) var(--spacing-lg);
+          background: var(--light-gray);
+          border-radius: var(--radius-full);
+          font-weight: var(--font-weight-bold);
+          font-size: 1rem;
+          color: var(--dark-gray);
+          transition: all var(--transition-base);
+          border: 2px solid transparent;
         }
 
-        .user-status:hover {
-          background: rgba(255,255,255,0.2);
+        .status-toggle:hover {
+          transform: translateY(-2px);
+          box-shadow: var(--shadow-md);
         }
 
-        .status-dot {
-          width: 8px;
-          height: 8px;
+        .status-toggle.approachable {
+          background: linear-gradient(135deg, var(--success) 0%, var(--secondary) 100%);
+          color: var(--white);
+          box-shadow: var(--shadow-secondary);
+        }
+
+        .status-toggle.approachable:hover {
+          box-shadow: var(--shadow-lg);
+        }
+
+        .status-toggle.busy {
+          background: var(--gray);
+          color: var(--white);
+        }
+
+        .status-indicator {
+          width: 12px;
+          height: 12px;
           border-radius: 50%;
-          transition: all 0.3s ease;
+          background: var(--white);
+          animation: pulse-bright 2s infinite;
         }
 
-        .user-status.approachable .status-dot {
-          background: var(--accent);
-          box-shadow: 0 0 10px var(--accent);
+        @keyframes pulse-bright {
+          0%, 100% {
+            opacity: 1;
+            transform: scale(1);
+          }
+          50% {
+            opacity: 0.7;
+            transform: scale(1.2);
+          }
         }
 
-        .user-status.busy .status-dot {
-          background: #ff4444;
-          box-shadow: 0 0 10px #ff4444;
+        .status-label {
+          font-size: 1rem;
         }
 
-        .hero {
+        .hero-section {
+          background: linear-gradient(135deg, 
+            rgba(255, 59, 92, 0.08) 0%, 
+            rgba(0, 217, 255, 0.08) 50%,
+            rgba(255, 184, 0, 0.08) 100%
+          );
+          border-bottom: 2px solid var(--light-gray);
+          position: relative;
+          overflow: hidden;
+        }
+
+        .hero-section::before {
+          content: '';
+          position: absolute;
+          top: -50%;
+          left: -50%;
+          width: 200%;
+          height: 200%;
+          background: radial-gradient(circle, rgba(255, 59, 92, 0.1) 0%, transparent 70%);
+          animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
+
+        .hero-content {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: var(--spacing-2xl) var(--spacing-xl);
           text-align: center;
-          padding: 40px 20px;
+          position: relative;
+          z-index: 1;
         }
 
-        .title {
+        .hero-title {
           font-size: 3rem;
-          font-weight: 800;
-          margin-bottom: 10px;
+          font-weight: var(--font-weight-extrabold);
+          background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          margin-bottom: var(--spacing-md);
+          letter-spacing: -1.5px;
+          line-height: 1.2;
         }
 
-        .subtitle {
-          color: var(--text-secondary);
-          font-size: 1.1rem;
+        .hero-subtitle {
+          font-size: 1.25rem;
+          color: var(--dark-gray);
+          font-weight: var(--font-weight-medium);
+          max-width: 600px;
+          margin: 0 auto;
         }
 
-        /* Mobile Optimizations */
+        /* Mobile Responsive */
         @media (max-width: 768px) {
-          .main-container {
-            padding-top: 70px;
+          .header-content {
+            padding: var(--spacing-md) var(--spacing-lg);
           }
 
-          .app-header {
-            padding: 12px 16px;
+          .logo-text {
+            font-size: 1.5rem;
           }
 
-          .logo {
-            font-size: 1.3rem;
-          }
-
-          .status-text {
-            display: none;
-          }
-
-          .user-status {
-            padding: 10px 12px;
-            min-width: 44px;
-            justify-content: center;
-          }
-
-          .hero {
-            padding: 30px 16px;
-          }
-
-          .title {
+          .logo-icon {
             font-size: 2rem;
           }
 
-          .subtitle {
-            font-size: 0.95rem;
+          .status-label {
+            display: none;
           }
-        }
 
-        @media (max-width: 480px) {
-          .title {
-            font-size: 1.75rem;
+          .status-toggle {
+            padding: var(--spacing-md);
+            min-width: 48px;
+            justify-content: center;
+          }
+
+          .hero-content {
+            padding: var(--spacing-xl) var(--spacing-lg);
+          }
+
+          .hero-title {
+            font-size: 2rem;
+          }
+
+          .hero-subtitle {
+            font-size: 1.1rem;
           }
         }
       `}</style>

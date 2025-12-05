@@ -66,25 +66,35 @@ export default function NearbyRadar({ userStatus }) {
     return (
       <div className="radar-container">
         <div className="empty-state">
-          <div className="icon">🙈</div>
-          <h3>You are hidden</h3>
-          <p>Switch to <b>Approachable</b> to see who's nearby.</p>
+          <div className="empty-icon">🙈</div>
+          <h3 className="empty-title">You're invisible</h3>
+          <p className="empty-text">Switch to Available to start discovering people nearby</p>
         </div>
         <style jsx>{`
           .radar-container {
-            width: 100%;
-            min-height: 60vh;
+            padding: var(--spacing-2xl) var(--spacing-md);
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            min-height: 50vh;
           }
           .empty-state {
             text-align: center;
-            opacity: 0.7;
+            max-width: 400px;
           }
-          .icon { font-size: 4rem; margin-bottom: 16px; }
-          h3 { font-size: 1.5rem; margin-bottom: 8px; }
+          .empty-icon {
+            font-size: 4rem;
+            margin-bottom: var(--spacing-md);
+          }
+          .empty-title {
+            font-size: 1.5rem;
+            font-weight: var(--font-weight-bold);
+            color: var(--black);
+            margin-bottom: var(--spacing-sm);
+          }
+          .empty-text {
+            color: var(--dark-gray);
+          }
         `}</style>
       </div>
     );
@@ -93,21 +103,24 @@ export default function NearbyRadar({ userStatus }) {
   return (
     <div className="radar-container">
       {lastAction === 'LIKED' && (
-        <div className="toast-match">
-          <span>✨ It's a Vibe! Request sent.</span>
+        <div className="toast-notification">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+          </svg>
+          <span>It's a match! Connection request sent</span>
         </div>
       )}
 
       {!scanning && activeEvents.length > 0 && (
-        <div className="event-filter-section">
-          <div className="filter-header">
-            <h3 className="filter-title">🎯 Discover</h3>
+        <div className="filters-section">
+          <div className="filters-header">
+            <h3 className="filters-title">Discover</h3>
             <div className="view-toggle">
               <button
                 className={`toggle-btn ${viewMode === 'grid' ? 'active' : ''}`}
                 onClick={() => setViewMode('grid')}
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                   <rect x="3" y="3" width="7" height="7" rx="1" />
                   <rect x="14" y="3" width="7" height="7" rx="1" />
                   <rect x="3" y="14" width="7" height="7" rx="1" />
@@ -119,7 +132,7 @@ export default function NearbyRadar({ userStatus }) {
                 className={`toggle-btn ${viewMode === 'map' ? 'active' : ''}`}
                 onClick={() => setViewMode('map')}
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z" />
                 </svg>
                 Map
@@ -127,62 +140,54 @@ export default function NearbyRadar({ userStatus }) {
             </div>
           </div>
 
-          <div className="filter-buttons">
+          <div className="filter-tabs">
             <button
-              className={`filter-btn ${eventFilter === 'all' ? 'active' : ''}`}
+              className={`filter-tab ${eventFilter === 'all' ? 'active' : ''}`}
               onClick={() => {
                 setEventFilter('all');
                 setSelectedEvent(null);
               }}
             >
-              <span className="filter-icon">👥</span>
-              <div className="filter-content">
-                <span className="filter-label">All Nearby</span>
-                <span className="filter-count">{nearbyUsers.length} users</span>
-              </div>
+              <span className="tab-label">All Nearby</span>
+              <span className="tab-count">{nearbyUsers.length}</span>
             </button>
             <button
-              className={`filter-btn event-filter ${eventFilter === 'events' ? 'active' : ''}`}
+              className={`filter-tab ${eventFilter === 'events' ? 'active' : ''}`}
               onClick={() => {
                 setEventFilter('events');
                 setSelectedEvent(null);
               }}
             >
-              <span className="filter-icon">📍</span>
-              <div className="filter-content">
-                <span className="filter-label">At Events Now</span>
-                <span className="filter-count">{eventCount} active</span>
-              </div>
-              {eventCount > 0 && <span className="pulse-dot"></span>}
+              <span className="tab-label">At Events</span>
+              <span className="tab-count">{eventCount}</span>
+              {eventCount > 0 && <span className="live-indicator"></span>}
             </button>
           </div>
 
           {activeEvents.length > 0 && (
-            <div className="event-chips-section">
-              <h4 className="chips-title">📍 Browse by Location</h4>
-              <div className="event-chips">
-                {activeEvents.map((event, index) => (
-                  <button
-                    key={index}
-                    className={`event-chip ${selectedEvent === event ? 'active' : ''}`}
-                    onClick={() => handleEventClick(event)}
-                  >
-                    <span className="chip-name">{event}</span>
-                    <span className="chip-count">{getEventCount(event)}</span>
-                  </button>
-                ))}
-              </div>
+            <div className="event-chips">
+              {activeEvents.map((event, index) => (
+                <button
+                  key={index}
+                  className={`event-chip ${selectedEvent === event ? 'active' : ''}`}
+                  onClick={() => handleEventClick(event)}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                  </svg>
+                  <span className="chip-label">{event}</span>
+                  <span className="chip-count">{getEventCount(event)}</span>
+                </button>
+              ))}
             </div>
           )}
         </div>
       )}
 
       {scanning ? (
-        <div className="scanner">
-          <div className="ripple"></div>
-          <div className="ripple delay-1"></div>
-          <div className="ripple delay-2"></div>
-          <p className="scanning-text glow-text">Scanning...</p>
+        <div className="loading-state">
+          <div className="spinner"></div>
+          <p className="loading-text">Finding people nearby...</p>
         </div>
       ) : viewMode === 'map' ? (
         <MapView users={filteredUsers} onUserClick={handleUserClick} />
@@ -199,7 +204,7 @@ export default function NearbyRadar({ userStatus }) {
             ))
           ) : (
             <div className="empty-state">
-              <p>No one at this location right now...</p>
+              <p>No one at this location right now</p>
             </div>
           )}
         </div>
@@ -207,293 +212,241 @@ export default function NearbyRadar({ userStatus }) {
 
       <style jsx>{`
         .radar-container {
-          width: 100%;
-          min-height: 60vh;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          padding: 20px;
-          position: relative;
-        }
-
-        .event-filter-section {
-          width: 100%;
           max-width: 1200px;
-          margin-bottom: 40px;
+          margin: 0 auto;
+          padding: var(--spacing-xl) var(--spacing-md);
         }
 
-        .filter-header {
+        .filters-section {
+          margin-bottom: var(--spacing-xl);
+        }
+
+        .filters-header {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: 16px;
+          margin-bottom: var(--spacing-lg);
         }
 
-        .filter-title {
+        .filters-title {
           font-size: 1.5rem;
-          font-weight: 800;
+          font-weight: var(--font-weight-bold);
+          color: var(--black);
         }
 
         .view-toggle {
           display: flex;
-          gap: 8px;
-          background: rgba(255,255,255,0.05);
+          gap: var(--spacing-xs);
+          background: var(--off-white);
           padding: 4px;
-          border-radius: 12px;
+          border-radius: var(--radius-md);
         }
 
         .toggle-btn {
           display: flex;
           align-items: center;
           gap: 6px;
-          padding: 8px 16px;
+          padding: 8px 14px;
           background: transparent;
-          border: none;
-          border-radius: 8px;
-          color: rgba(255,255,255,0.6);
-          cursor: pointer;
-          transition: all 0.3s;
+          border-radius: var(--radius-sm);
+          color: var(--dark-gray);
           font-size: 0.9rem;
-          font-weight: 600;
+          font-weight: var(--font-weight-medium);
+          transition: all var(--transition-fast);
         }
 
         .toggle-btn:hover {
-          color: white;
+          background: var(--light-gray);
         }
 
         .toggle-btn.active {
-          background: var(--accent);
-          color: #000;
+          background: var(--white);
+          color: var(--black);
+          box-shadow: var(--shadow-sm);
         }
 
-        .filter-buttons {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-          gap: 16px;
-          margin-bottom: 24px;
+        .filter-tabs {
+          display: flex;
+          gap: var(--spacing-sm);
+          margin-bottom: var(--spacing-lg);
         }
 
-        .filter-btn {
-          position: relative;
-          padding: 20px;
-          background: rgba(255,255,255,0.05);
-          border: 2px solid rgba(255,255,255,0.1);
-          border-radius: 20px;
-          color: white;
-          cursor: pointer;
-          transition: all 0.3s;
+        .filter-tab {
+          flex: 1;
           display: flex;
           align-items: center;
-          gap: 16px;
+          justify-content: center;
+          gap: var(--spacing-sm);
+          padding: var(--spacing-md);
+          background: var(--bg-card);
+          border: 2px solid var(--light-gray);
+          border-radius: var(--radius-md);
+          font-weight: var(--font-weight-semibold);
+          color: var(--dark-gray);
+          transition: all var(--transition-base);
+          position: relative;
         }
 
-        .filter-btn:active {
-          transform: scale(0.98);
+        .filter-tab:hover {
+          border-color: var(--gray);
         }
 
-        .filter-btn:hover {
-          background: rgba(255,255,255,0.1);
-          transform: translateY(-2px);
-        }
-
-        .filter-btn.active {
-          background: rgba(255, 51, 102, 0.2);
+        .filter-tab.active {
+          background: var(--primary);
           border-color: var(--primary);
-          box-shadow: 0 0 20px rgba(255, 51, 102, 0.3);
+          color: var(--white);
         }
 
-        .filter-btn.event-filter.active {
-          background: rgba(0, 255, 204, 0.2);
-          border-color: var(--accent);
-          box-shadow: 0 0 20px rgba(0, 255, 204, 0.3);
+        .tab-label {
+          font-size: 0.95rem;
         }
 
-        .filter-icon {
-          font-size: 2rem;
-        }
-
-        .filter-content {
-          display: flex;
-          flex-direction: column;
-          align-items: flex-start;
-          flex: 1;
-        }
-
-        .filter-label {
-          font-size: 1rem;
-          font-weight: 700;
-          margin-bottom: 4px;
-        }
-
-        .filter-count {
+        .tab-count {
+          padding: 2px 8px;
+          background: rgba(0,0,0,0.1);
+          border-radius: var(--radius-full);
           font-size: 0.85rem;
-          opacity: 0.7;
         }
 
-        .pulse-dot {
-          width: 12px;
-          height: 12px;
-          background: var(--accent);
+        .filter-tab.active .tab-count {
+          background: rgba(255,255,255,0.2);
+        }
+
+        .live-indicator {
+          position: absolute;
+          top: 8px;
+          right: 8px;
+          width: 8px;
+          height: 8px;
+          background: var(--secondary);
           border-radius: 50%;
-          animation: pulse-dot 1.5s infinite;
+          animation: pulse-live 1.5s infinite;
         }
 
-        @keyframes pulse-dot {
-          0%, 100% { 
-            transform: scale(1);
+        @keyframes pulse-live {
+          0%, 100% {
             opacity: 1;
+            transform: scale(1);
           }
-          50% { 
-            transform: scale(1.3);
-            opacity: 0.7;
+          50% {
+            opacity: 0.6;
+            transform: scale(1.2);
           }
-        }
-
-        .event-chips-section {
-          margin-top: 20px;
-          padding: 20px;
-          background: rgba(255,255,255,0.03);
-          border-radius: 16px;
-          border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .chips-title {
-          font-size: 1rem;
-          font-weight: 700;
-          margin-bottom: 12px;
-          color: var(--accent);
         }
 
         .event-chips {
           display: flex;
           flex-wrap: wrap;
-          gap: 10px;
+          gap: var(--spacing-sm);
         }
 
         .event-chip {
           display: flex;
           align-items: center;
-          gap: 8px;
+          gap: 6px;
           padding: 10px 16px;
-          background: rgba(0, 255, 204, 0.1);
-          border: 2px solid rgba(0, 255, 204, 0.3);
-          border-radius: 20px;
-          color: white;
-          cursor: pointer;
-          transition: all 0.3s;
+          background: var(--bg-card);
+          border: 1px solid var(--light-gray);
+          border-radius: var(--radius-full);
           font-size: 0.9rem;
+          font-weight: var(--font-weight-medium);
+          color: var(--dark-gray);
+          transition: all var(--transition-base);
         }
 
         .event-chip:hover {
-          background: rgba(0, 255, 204, 0.2);
-          border-color: var(--accent);
-          transform: translateY(-2px);
+          border-color: var(--secondary);
+          background: rgba(78, 205, 196, 0.05);
         }
 
         .event-chip.active {
-          background: var(--accent);
-          color: #000;
-          border-color: var(--accent);
-          box-shadow: 0 4px 12px rgba(0, 255, 204, 0.4);
-        }
-
-        .chip-name {
-          font-weight: 600;
+          background: var(--secondary);
+          border-color: var(--secondary);
+          color: var(--white);
         }
 
         .chip-count {
           padding: 2px 8px;
-          background: rgba(0,0,0,0.3);
-          border-radius: 10px;
-          font-size: 0.75rem;
-          font-weight: 700;
+          background: rgba(0,0,0,0.1);
+          border-radius: var(--radius-full);
+          font-size: 0.8rem;
+          font-weight: var(--font-weight-semibold);
         }
 
         .event-chip.active .chip-count {
-          background: rgba(0,0,0,0.2);
+          background: rgba(255,255,255,0.2);
         }
 
-        .scanner {
-          position: relative;
-          width: 300px;
-          height: 300px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
+        .loading-state {
+          text-align: center;
+          padding: var(--spacing-2xl);
         }
 
-        .ripple {
-          position: absolute;
-          border: 2px solid var(--primary);
+        .spinner {
+          width: 48px;
+          height: 48px;
+          border: 4px solid var(--light-gray);
+          border-top-color: var(--primary);
           border-radius: 50%;
-          opacity: 0;
-          animation: ripple 3s infinite cubic-bezier(0, 0.2, 0.8, 1);
+          margin: 0 auto var(--spacing-md);
+          animation: spin 1s linear infinite;
         }
 
-        .delay-1 { animation-delay: 1s; }
-        .delay-2 { animation-delay: 2s; }
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
 
-        .scanning-text {
-          margin-top: 350px;
-          font-size: 1.2rem;
-          letter-spacing: 2px;
-          text-transform: uppercase;
+        .loading-text {
+          color: var(--dark-gray);
+          font-weight: var(--font-weight-medium);
         }
 
         .results-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(320px, 450px));
-          gap: 60px 24px;
-          width: 100%;
-          max-width: 1200px;
+          grid-template-columns: repeat(auto-fill, minmax(320px, 400px));
+          gap: var(--spacing-xl);
           justify-content: center;
-          padding-bottom: 40px;
         }
 
-        .toast-match {
+        .toast-notification {
           position: fixed;
-          bottom: 40px;
+          bottom: var(--spacing-xl);
           left: 50%;
           transform: translateX(-50%);
-          background: var(--primary);
-          color: white;
-          padding: 12px 24px;
-          border-radius: 30px;
-          font-weight: 600;
-          box-shadow: 0 10px 30px var(--primary-glow);
-          z-index: 200;
+          display: flex;
+          align-items: center;
+          gap: var(--spacing-sm);
+          padding: var(--spacing-md) var(--spacing-lg);
+          background: var(--secondary);
+          color: var(--white);
+          border-radius: var(--radius-full);
+          font-weight: var(--font-weight-semibold);
+          box-shadow: var(--shadow-lg);
+          z-index: 1000;
           animation: slideUp 0.3s ease-out;
         }
 
-        @keyframes ripple {
-          0% { width: 0; height: 0; opacity: 1; }
-          100% { width: 300px; height: 300px; opacity: 0; }
-        }
-        
         @keyframes slideUp {
-          from { transform: translate(-50%, 20px); opacity: 0; }
-          to { transform: translate(-50%, 0); opacity: 1; }
+          from {
+            opacity: 0;
+            transform: translate(-50%, 20px);
+          }
+          to {
+            opacity: 1;
+            transform: translate(-50%, 0);
+          }
         }
 
-        /* Mobile Optimizations */
+        /* Mobile */
         @media (max-width: 768px) {
           .radar-container {
-            padding: 16px;
+            padding: var(--spacing-lg) var(--spacing-md);
           }
 
-          .event-filter-section {
-            margin-bottom: 24px;
-          }
-
-          .filter-header {
+          .filters-header {
             flex-direction: column;
-            gap: 12px;
             align-items: flex-start;
-          }
-
-          .filter-title {
-            font-size: 1.3rem;
+            gap: var(--spacing-md);
           }
 
           .view-toggle {
@@ -505,55 +458,20 @@ export default function NearbyRadar({ userStatus }) {
             justify-content: center;
           }
 
-          .filter-buttons {
-            grid-template-columns: 1fr;
-            gap: 12px;
-          }
-
-          .filter-btn {
-            padding: 16px;
-          }
-
-          .filter-icon {
-            font-size: 1.5rem;
-          }
-
-          .filter-label {
-            font-size: 0.9rem;
-          }
-
-          .event-chips-section {
-            padding: 16px;
-          }
-
-          .chips-title {
-            font-size: 0.9rem;
-          }
-
-          .event-chip {
-            font-size: 0.85rem;
-            padding: 8px 12px;
-          }
-
-          .scanner {
-            width: 200px;
-            height: 200px;
-          }
-
-          .scanning-text {
-            font-size: 1rem;
-            margin-top: 250px;
+          .filter-tabs {
+            flex-direction: column;
           }
 
           .results-grid {
             grid-template-columns: 1fr;
-            gap: 50px 16px;
+            gap: var(--spacing-lg);
           }
 
-          .toast-match {
-            bottom: 20px;
-            font-size: 0.9rem;
-            padding: 10px 20px;
+          .toast-notification {
+            bottom: var(--spacing-lg);
+            left: var(--spacing-md);
+            right: var(--spacing-md);
+            transform: none;
           }
         }
       `}</style>
