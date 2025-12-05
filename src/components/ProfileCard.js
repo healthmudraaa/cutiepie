@@ -3,19 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-export default function ProfileCard({ user, onLike, onPass }) {
-  const handlePassClick = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onPass(user.id);
-  };
-
-  const handleLikeClick = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onLike(user.id);
-  };
-
+export default function ProfileCard({ user }) {
   return (
     <div className="profile-card-container">
       <Link href={`/profile/${user.id}`} className="profile-card">
@@ -87,21 +75,6 @@ export default function ProfileCard({ user, onLike, onPass }) {
           </div>
         </div>
       </Link>
-
-      {/* Action Buttons */}
-      <div className="card-actions" onClick={(e) => e.stopPropagation()}>
-        <button className="action-btn pass-btn" onClick={handlePassClick} aria-label="Pass">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
-        <button className="action-btn like-btn" onClick={handleLikeClick} aria-label="Like">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-          </svg>
-        </button>
-      </div>
 
       <style jsx>{`
         .profile-card-container {
@@ -265,7 +238,6 @@ export default function ProfileCard({ user, onLike, onPass }) {
           display: flex;
           gap: var(--spacing-sm);
           flex-wrap: wrap;
-          margin-bottom: var(--spacing-md);
         }
 
         .interest-tag {
@@ -287,53 +259,6 @@ export default function ProfileCard({ user, onLike, onPass }) {
           color: var(--dark-gray);
         }
 
-        .card-actions {
-          display: flex;
-          justify-content: center;
-          gap: var(--spacing-lg);
-          padding: 0 var(--spacing-lg) var(--spacing-lg);
-        }
-
-        .action-btn {
-          width: 56px;
-          height: 56px;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          transition: all var(--transition-base);
-          box-shadow: var(--shadow-md);
-        }
-
-        .action-btn:hover {
-          transform: scale(1.1);
-          box-shadow: var(--shadow-lg);
-        }
-
-        .action-btn:active {
-          transform: scale(0.95);
-        }
-
-        .pass-btn {
-          background: var(--white);
-          color: var(--primary);
-          border: 2px solid var(--light-gray);
-        }
-
-        .pass-btn:hover {
-          border-color: var(--primary);
-          background: rgba(255, 107, 107, 0.05);
-        }
-
-        .like-btn {
-          background: var(--primary);
-          color: var(--white);
-        }
-
-        .like-btn:hover {
-          background: var(--primary-dark);
-        }
-
         /* Mobile */
         @media (max-width: 768px) {
           .card-image-wrapper {
@@ -346,11 +271,6 @@ export default function ProfileCard({ user, onLike, onPass }) {
 
           .age {
             font-size: 1.15rem;
-          }
-
-          .action-btn {
-            width: 52px;
-            height: 52px;
           }
         }
       `}</style>

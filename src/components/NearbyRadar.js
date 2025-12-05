@@ -8,7 +8,6 @@ import { MOCK_USERS } from '@/lib/data';
 export default function NearbyRadar({ userStatus }) {
   const [scanning, setScanning] = useState(true);
   const [nearbyUsers, setNearbyUsers] = useState([]);
-  const [lastAction, setLastAction] = useState(null);
   const [eventFilter, setEventFilter] = useState('all');
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [viewMode, setViewMode] = useState('grid');
@@ -27,18 +26,6 @@ export default function NearbyRadar({ userStatus }) {
     }, 2000);
     return () => clearTimeout(timer);
   }, [userStatus]);
-
-  const handleLike = (id) => {
-    setNearbyUsers(prev => prev.filter(u => u.id !== id));
-    setLastAction('LIKED');
-    setTimeout(() => setLastAction(null), 2000);
-  };
-
-  const handlePass = (id) => {
-    setNearbyUsers(prev => prev.filter(u => u.id !== id));
-    setLastAction('PASSED');
-    setTimeout(() => setLastAction(null), 2000);
-  };
 
   const handleEventClick = (eventName) => {
     setSelectedEvent(eventName);
@@ -67,7 +54,7 @@ export default function NearbyRadar({ userStatus }) {
       <div className="radar-container">
         <div className="empty-state">
           <div className="empty-icon">🙈</div>
-          <h3 className="empty-title">You're invisible</h3>
+          <h3 className="empty-title">You are invisible</h3>
           <p className="empty-text">Switch to Available to start discovering people nearby</p>
         </div>
         <style jsx>{`
@@ -102,15 +89,6 @@ export default function NearbyRadar({ userStatus }) {
 
   return (
     <div className="radar-container">
-      {lastAction === 'LIKED' && (
-        <div className="toast-notification">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-          </svg>
-          <span>It's a match! Connection request sent</span>
-        </div>
-      )}
-
       {!scanning && activeEvents.length > 0 && (
         <div className="filters-section">
           <div className="filters-header">
@@ -198,8 +176,6 @@ export default function NearbyRadar({ userStatus }) {
               <ProfileCard
                 key={user.id}
                 user={user}
-                onLike={handleLike}
-                onPass={handlePass}
               />
             ))
           ) : (
@@ -408,35 +384,6 @@ export default function NearbyRadar({ userStatus }) {
           justify-content: center;
         }
 
-        .toast-notification {
-          position: fixed;
-          bottom: var(--spacing-xl);
-          left: 50%;
-          transform: translateX(-50%);
-          display: flex;
-          align-items: center;
-          gap: var(--spacing-sm);
-          padding: var(--spacing-md) var(--spacing-lg);
-          background: var(--secondary);
-          color: var(--white);
-          border-radius: var(--radius-full);
-          font-weight: var(--font-weight-semibold);
-          box-shadow: var(--shadow-lg);
-          z-index: 1000;
-          animation: slideUp 0.3s ease-out;
-        }
-
-        @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translate(-50%, 20px);
-          }
-          to {
-            opacity: 1;
-            transform: translate(-50%, 0);
-          }
-        }
-
         /* Mobile */
         @media (max-width: 768px) {
           .radar-container {
@@ -465,13 +412,6 @@ export default function NearbyRadar({ userStatus }) {
           .results-grid {
             grid-template-columns: 1fr;
             gap: var(--spacing-lg);
-          }
-
-          .toast-notification {
-            bottom: var(--spacing-lg);
-            left: var(--spacing-md);
-            right: var(--spacing-md);
-            transform: none;
           }
         }
       `}</style>
