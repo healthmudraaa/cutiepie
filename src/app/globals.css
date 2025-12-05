@@ -1,0 +1,72 @@
+:root {
+  /* Brand Colors - Sophisticated & Vibrant */
+  --primary: #FF3366;
+  --primary-glow: rgba(255, 51, 102, 0.4);
+  --secondary: #7000FF;
+  --accent: #00FFCC;
+
+  /* Backgrounds - Dark & Glassy */
+  --bg-dark: #0A0A0A;
+  --bg-card: rgba(255, 255, 255, 0.05);
+  --bg-glass: rgba(20, 20, 20, 0.6);
+
+  /* Typography */
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --text-primary: #FFFFFF;
+  --text-secondary: #AAAAAA;
+
+  /* Spacing & Radius */
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --radius-sm: 8px;
+
+  /* Animations */
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  /* Mobile Breakpoints */
+  --mobile-max: 768px;
+  --tablet-max: 1024px;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  touch-action: pan-y;
+}
+
+/* Utilities */
+.glass {
+  background: var(--bg-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glow-text {
+  text-shadow: 0 0 20px var(--primary-glow);
+}
+
+/* Mobile-specific utilities */
+@media (max-width: 768px) {
+  body {
+    font-size: 16px;
+    /* Prevent zoom on iOS */
+  }
+
+  /* Larger touch targets on mobile */
+  button,
+  a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
